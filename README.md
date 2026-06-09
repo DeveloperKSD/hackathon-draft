@@ -39,7 +39,7 @@ Instead of using a single generic chatbot prompt, this system splits tasks among
    ```env
    API_KEY=YOUR_GEMINI_API_KEY
    MODEL_BASE_URL=https://generativelanguage.googleapis.com/v1beta/
-   MODEL_NAME=gemini-1.5-flash
+   MODEL_NAME=gemini-2.5-flash
    ```
 
 3. Launch the Simulator Server:
