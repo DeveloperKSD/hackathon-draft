@@ -1,35 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xianyu AutoAgent Simulator (Gemini Powered)</title>
-    <!-- Modern Premium Font -->
+    <title>Xianyu AutoAgent Simulator Pro</title>
+    <!-- Modern Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --panel-bg: rgba(17, 24, 39, 0.7);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --bg-color: #030712;
+            --panel-bg: rgba(15, 23, 42, 0.45);
+            --panel-border: rgba(255, 255, 255, 0.05);
             --primary-glow: rgba(99, 102, 241, 0.15);
-
-            --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
-
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            
             --color-primary: #6366f1;
             --color-primary-hover: #4f46e5;
-            --color-price: #ef4444;
-            --color-tech: #10b981;
-            --color-default: #3b82f6;
-            --color-classify: #a855f7;
-
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --color-price: #f87171;
+            --color-tech: #34d399;
+            --color-default: #60a5fa;
+            --color-classify: #c084fc;
+            
+            --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -45,17 +42,18 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 50%);
+            overflow: hidden;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 35%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 40%),
+                radial-gradient(at 50% 50%, rgba(99, 102, 241, 0.02) 0px, transparent 50%);
         }
 
         header {
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid var(--border-color);
-            background: rgba(11, 15, 25, 0.8);
-            backdrop-filter: blur(12px);
+            padding: 1.1rem 2rem;
+            border-bottom: 1px solid var(--panel-border);
+            background: rgba(3, 7, 18, 0.7);
+            backdrop-filter: blur(24px);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -63,86 +61,113 @@
         }
 
         .logo-section h1 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 1.5rem;
             font-weight: 700;
-            letter-spacing: -0.025em;
+            letter-spacing: -0.03em;
             background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
         }
 
         .logo-section span {
-            font-size: 0.75rem;
-            background: rgba(99, 102, 241, 0.15);
+            font-size: 0.7rem;
+            background: rgba(99, 102, 241, 0.08);
             color: #818cf8;
-            padding: 0.2rem 0.6rem;
+            padding: 0.2rem 0.65rem;
             border-radius: 9999px;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border: 1px solid rgba(99, 102, 241, 0.15);
         }
 
         .api-status {
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
         }
 
         .status-pill {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--panel-border);
+            padding: 0.4rem 0.85rem;
+            border-radius: 12px;
+            font-size: 0.82rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.55rem;
             color: var(--text-secondary);
         }
 
         .status-indicator {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background-color: var(--color-tech);
-            box-shadow: 0 0 8px var(--color-tech);
+            box-shadow: 0 0 10px var(--color-tech);
+            animation: pulse-indicator 2s infinite;
+        }
+
+        @keyframes pulse-indicator {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; box-shadow: 0 0 14px var(--color-tech); }
+            100% { opacity: 0.6; }
         }
 
         .main-container {
             flex: 1;
             display: grid;
-            grid-template-columns: 350px 1fr;
-            max-width: 1600px;
+            grid-template-columns: 370px 1fr;
+            max-width: 1700px;
             width: 100%;
             margin: 0 auto;
             padding: 1.5rem;
             gap: 1.5rem;
-            height: calc(100vh - 85px);
+            height: calc(100vh - 78px);
+            transition: var(--transition-smooth);
         }
 
-        /* Left Side Panel - Config & Presets */
+        .main-container.collapsed {
+            grid-template-columns: 0px 1fr;
+        }
+
+        /* Config Panel Styling */
         .config-panel {
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            backdrop-filter: blur(16px);
-            padding: 1.5rem;
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 1.75rem;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
             overflow-y: auto;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            transition: var(--transition-smooth);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .main-container.collapsed .config-panel {
+            padding: 0;
+            margin: 0;
+            border: none;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .panel-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-primary);
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 0.85rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -155,31 +180,29 @@
         }
 
         .form-group label {
-            font-size: 0.85rem;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 700;
             color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.65rem 0.8rem;
+        .form-group input, .form-group textarea {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 0.75rem 0.95rem;
             color: var(--text-primary);
             font-family: inherit;
             font-size: 0.9rem;
             transition: var(--transition-smooth);
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+        .form-group input:focus, .form-group textarea:focus {
             outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.15);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 0 14px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.7);
         }
 
         .form-row {
@@ -191,14 +214,14 @@
         .presets-list {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.45rem;
         }
 
         .preset-btn {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.6rem 0.8rem;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 0.65rem 0.9rem;
             text-align: left;
             color: var(--text-secondary);
             font-size: 0.85rem;
@@ -210,9 +233,10 @@
         }
 
         .preset-btn:hover {
-            background: rgba(99, 102, 241, 0.08);
-            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(99, 102, 241, 0.06);
+            border-color: rgba(99, 102, 241, 0.25);
             color: var(--text-primary);
+            transform: translateX(4px);
         }
 
         .preset-btn::after {
@@ -227,50 +251,71 @@
             transform: translateX(0);
         }
 
-        /* Right Side - Chat Interface */
+        /* Right Side - Chat Container */
         .chat-container {
             background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
         }
 
         .chat-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 1.75rem;
+            border-bottom: 1px solid var(--panel-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(17, 24, 39, 0.4);
+            background: rgba(15, 23, 42, 0.2);
         }
 
         .chat-user-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.85rem;
+        }
+
+        .toggle-panel-btn {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition-smooth);
+        }
+
+        .toggle-panel-btn:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
         }
 
         .avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
             background: linear-gradient(135deg, var(--color-primary) 0%, #a855f7 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             color: white;
-            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
         }
 
         .user-details h3 {
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             font-weight: 600;
+            letter-spacing: -0.015em;
         }
 
         .user-details p {
@@ -280,63 +325,84 @@
 
         .chat-meta {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             align-items: center;
         }
 
         .badge {
             font-size: 0.75rem;
             font-weight: 600;
-            padding: 0.35rem 0.75rem;
-            border-radius: 6px;
+            padding: 0.45rem 0.95rem;
+            border-radius: 10px;
             border: 1px solid transparent;
             display: flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
             transition: var(--transition-smooth);
         }
 
         .badge-info {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(59, 130, 246, 0.08);
             color: var(--color-default);
-            border-color: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.15);
         }
 
         .badge-agent {
-            background: rgba(168, 85, 247, 0.1);
-            color: #c084fc;
-            border-color: rgba(168, 85, 247, 0.2);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-secondary);
+            border-color: var(--panel-border);
             text-transform: uppercase;
+        }
+
+        .badge-agent.active-price {
+            background: rgba(239, 68, 68, 0.08);
+            color: var(--color-price);
+            border-color: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.1);
+        }
+
+        .badge-agent.active-tech {
+            background: rgba(16, 185, 129, 0.08);
+            color: var(--color-tech);
+            border-color: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .badge-agent.active-default {
+            background: rgba(59, 130, 246, 0.08);
+            color: var(--color-default);
+            border-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.1);
+        }
+
+        .badge-agent.active-classify {
+            background: rgba(168, 85, 247, 0.08);
+            color: var(--color-classify);
+            border-color: rgba(168, 85, 247, 0.2);
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.1);
         }
 
         .chat-messages {
             flex: 1;
-            padding: 1.5rem;
+            padding: 2.25rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            background: rgba(10, 14, 23, 0.3);
+            gap: 1.5rem;
+            background: rgba(8, 12, 21, 0.25);
         }
 
         .message-bubble {
-            max-width: 70%;
+            max-width: 65%;
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
-            animation: slideIn 0.3s ease-out;
+            gap: 0.35rem;
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .message-bubble.buyer {
@@ -348,9 +414,13 @@
         }
 
         .message-sender {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
+            font-weight: 600;
             color: var(--text-secondary);
-            margin: 0 0.5rem;
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .message-bubble.seller .message-sender {
@@ -358,86 +428,135 @@
         }
 
         .message-content {
-            padding: 0.85rem 1.1rem;
-            border-radius: 16px;
+            padding: 0.95rem 1.35rem;
+            border-radius: 20px;
             font-size: 0.95rem;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .buyer .message-content {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--panel-border);
             border-top-left-radius: 4px;
             color: var(--text-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .seller .message-content {
-            background: var(--color-primary);
+            background: linear-gradient(135deg, var(--color-primary) 0%, #4f46e5 100%);
             border-top-right-radius: 4px;
             color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.25);
         }
 
         .message-bubble.system {
             align-self: center;
-            max-width: 90%;
+            max-width: 85%;
             margin: 0.5rem 0;
             animation: fadeIn 0.4s ease-out;
         }
 
         .system .message-content {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 0.55rem 1.1rem;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-align: center;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.01);
+        }
+
+        /* Suggested Chips Area */
+        .suggested-chips-container {
+            padding: 0.65rem 1.75rem;
+            display: flex;
+            gap: 0.6rem;
+            overflow-x: auto;
+            background: rgba(15, 23, 42, 0.2);
+            border-top: 1px solid var(--panel-border);
+            scrollbar-width: none;
+        }
+
+        .suggested-chips-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .prompt-chip {
             background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--panel-border);
+            color: var(--text-secondary);
+            padding: 0.55rem 1.1rem;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition-smooth);
+        }
+
+        .prompt-chip:hover {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: rgba(99, 102, 241, 0.35);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Loading / Thinking bubble */
+        .thinking-bubble {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 0.65rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            align-self: flex-end;
+            margin-right: 0.5rem;
+            animation: breathe 2s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0% { border-color: rgba(255, 255, 255, 0.05); }
+            50% { border-color: rgba(99, 102, 241, 0.3); }
+            100% { border-color: rgba(255, 255, 255, 0.05); }
+        }
+
+        .thinking-text {
             font-size: 0.8rem;
             color: var(--text-secondary);
             font-style: italic;
-            text-align: center;
         }
 
-        /* Typing indicator */
         .typing-indicator {
             display: flex;
-            align-items: center;
             gap: 0.3rem;
-            padding: 0.5rem 1rem;
+            align-items: center;
         }
 
         .typing-dot {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             background: var(--text-secondary);
             border-radius: 50%;
             animation: wave 1.2s infinite ease-in-out;
         }
 
-        .typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes wave {
-
-            0%,
-            60%,
-            100% {
-                transform: translateY(0);
-            }
-
-            30% {
-                transform: translateY(-6px);
-            }
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
         }
 
-        /* Input area */
+        /* Chat Input Area */
         .chat-input-area {
-            padding: 1.25rem 1.5rem;
-            border-top: 1px solid var(--border-color);
-            background: rgba(17, 24, 39, 0.6);
+            padding: 1.25rem 1.75rem;
+            border-top: 1px solid var(--panel-border);
+            background: rgba(15, 23, 42, 0.45);
             display: flex;
             gap: 1rem;
             align-items: center;
@@ -450,10 +569,10 @@
 
         .chat-input {
             width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 0.85rem 1.5rem;
+            background: rgba(8, 12, 21, 0.7);
+            border: 1px solid var(--panel-border);
+            border-radius: 99px;
+            padding: 0.95rem 1.75rem;
             color: var(--text-primary);
             font-family: inherit;
             font-size: 0.95rem;
@@ -462,16 +581,16 @@
 
         .chat-input:focus {
             outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
-            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+            background: rgba(8, 12, 21, 0.95);
         }
 
         .send-btn {
             background: var(--color-primary);
             border: none;
-            width: 46px;
-            height: 46px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             color: white;
             font-size: 1.1rem;
@@ -480,7 +599,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
         }
 
         .send-btn:hover {
@@ -489,7 +608,7 @@
         }
 
         .send-btn:disabled {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             color: var(--text-secondary);
             cursor: not-allowed;
             box-shadow: none;
@@ -497,66 +616,48 @@
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--panel-border);
             color: var(--text-secondary);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            padding: 0.55rem 1.25rem;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 0.85rem;
+            font-weight: 500;
             transition: var(--transition-smooth);
             font-family: inherit;
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
             color: var(--text-primary);
-        }
-
-        /* Scrollbar styles */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 999px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
-
 <body>
 
     <header>
         <div class="logo-section">
-            <h1>Xianyu AutoAgent <span>Simulator</span></h1>
+            <h1>Xianyu AutoAgent <span>v2.0 PRO</span></h1>
         </div>
         <div class="api-status">
             <div class="status-pill">
                 <div class="status-indicator"></div>
-                <span>Google Gemini (OpenAI API Mode)</span>
+                <span>Gemini API Node (Secure)</span>
             </div>
             <button class="btn-secondary" id="clear-chat-btn">Reset Simulation</button>
         </div>
     </header>
 
-    <div class="main-container">
+    <div class="main-container" id="main-layout-container">
         <!-- Configuration & Presets (Left Side) -->
         <div class="config-panel">
             <div class="panel-title">
-                <span>Product Configuration</span>
+                <span>Product Context</span>
             </div>
-
+            
             <div class="form-group">
-                <label for="prod-presets">Product Templates</label>
+                <label for="prod-presets">Load Presets</label>
                 <div class="presets-list" id="prod-presets">
                     <button class="preset-btn" onclick="loadPreset('keyboard')">⌨️ Mechanical Keyboard</button>
                     <button class="preset-btn" onclick="loadPreset('iphone')">📱 iPhone 13 (Used)</button>
@@ -572,7 +673,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="item-price">Original Price</label>
-                    <input type="text" id="item-price" placeholder="e.g., 499">
+                    <input type="text" id="item-price" placeholder="e.g., $60">
                 </div>
                 <div class="form-group">
                     <label for="item-stock">Stock Qty</label>
@@ -581,9 +682,8 @@
             </div>
 
             <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
-                <label for="item-desc">Product Description & Specs</label>
-                <textarea id="item-desc" style="flex: 1; min-height: 150px; resize: none;"
-                    placeholder="Provide details about conditions, scratch levels, specifications..."></textarea>
+                <label for="item-desc">Specifications & Details</label>
+                <textarea id="item-desc" style="flex: 1; min-height: 180px; resize: none;" placeholder="Details about conditions, wear, specifications..."></textarea>
             </div>
         </div>
 
@@ -591,10 +691,16 @@
         <div class="chat-container">
             <div class="chat-header">
                 <div class="chat-user-info">
-                    <div class="avatar">B</div>
+                    <button class="toggle-panel-btn" id="toggle-panel-btn" title="Toggle Config Panel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="3" x2="9" y2="21"></line>
+                        </svg>
+                    </button>
+                    <div class="avatar">AI</div>
                     <div class="user-details">
-                        <h3>Simulated Buyer</h3>
-                        <p id="model-badge">Model: gemini-1.5-flash</p>
+                        <h3>Simulated Negotiation</h3>
+                        <p id="model-badge">Model: gemini-2.5-flash</p>
                     </div>
                 </div>
                 <div class="chat-meta">
@@ -607,20 +713,26 @@
                 <!-- Welcome system message -->
                 <div class="message-bubble system">
                     <div class="message-content">
-                        Hello! Set your product details on the left, then send a message as a simulated buyer. The AI
-                        AutoAgent will respond as the seller.
+                        Chat workspace initialized. Choose a template preset on the left, then use the quick prompt chips below or write a custom message to test how the AutoAgent handles the buyer.
                     </div>
                 </div>
             </div>
 
+            <!-- Quick suggested chips -->
+            <div class="suggested-chips-container" id="chips-container">
+                <button class="prompt-chip" onclick="sendQuickPrompt('Is this item still available?')">🙋 Available?</button>
+                <button class="prompt-chip" onclick="sendQuickPrompt('Can you explain the technical specifications?')">🔍 Specs</button>
+                <button class="prompt-chip" onclick="sendQuickPrompt('Can you offer any discount on this price?')">💰 Ask Discount</button>
+                <button class="prompt-chip" onclick="sendQuickPrompt('Would you sell it for 10% less?')">🏷️ Negotiate 10%</button>
+                <button class="prompt-chip" onclick="sendQuickPrompt('Is shipping free? When can you ship it?')">🚚 Shipping details</button>
+            </div>
+
             <div class="chat-input-area">
                 <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" id="message-input"
-                        placeholder="Type a message as the buyer (e.g., 'Is it available?', 'Can you make it cheaper?')...">
+                    <input type="text" class="chat-input" id="message-input" placeholder="Type a message as the buyer...">
                 </div>
                 <button class="send-btn" id="send-button">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="22" y1="2" x2="11" y2="13"></line>
                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
@@ -634,19 +746,19 @@
         const presets = {
             keyboard: {
                 title: "Keychron K2 V2 Hot-swappable Mechanical Keyboard",
-                price: "¥399",
+                price: "$60",
                 stock: 1,
-                desc: "Original Price: 499. Hot-swappable red switches, RGB backlight, aluminium frame. Condition is 95% new, lightly used for 2 weeks. USB-C cable and original keycap puller included. Selling because I upgraded to a custom board."
+                desc: "Original Price: $80. Hot-swappable red switches, RGB backlight, aluminium frame. Condition is 95% new, lightly used for 2 weeks. USB-C cable and original keycap puller included. Selling because I upgraded to a custom board."
             },
             iphone: {
                 title: "iPhone 13 128GB Blue (90% New)",
-                price: "¥2800",
+                price: "$450",
                 stock: 1,
                 desc: "Used iPhone 13. Screen has normal micro-scratches, back glass is perfect. Battery health is at 83%. All functions work normal (FaceID, Cameras, TrueTone). Comes with an extra screen protector but no charger box."
             },
             mic: {
                 title: "Shure MV7 USB/XLR Podcast Microphone",
-                price: "¥1200",
+                price: "$180",
                 stock: 2,
                 desc: "Professional dynamic microphone. Excellent condition, used only in clean home studio environment. Both USB and XLR ports work flawlessly. Zero scratches on the metal chassis. Fast shipping."
             }
@@ -664,6 +776,8 @@
         const bargainBadge = document.getElementById('bargain-badge');
         const agentBadge = document.getElementById('agent-badge');
         const modelBadge = document.getElementById('model-badge');
+        const togglePanelBtn = document.getElementById('toggle-panel-btn');
+        const mainLayoutContainer = document.getElementById('main-layout-container');
 
         const titleInput = document.getElementById('item-title');
         const priceInput = document.getElementById('item-price');
@@ -674,6 +788,11 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadPreset('keyboard');
             inputField.focus();
+        });
+
+        // Toggle layout
+        togglePanelBtn.addEventListener('click', () => {
+            mainLayoutContainer.classList.toggle('collapsed');
         });
 
         function loadPreset(key) {
@@ -695,9 +814,9 @@
         function createChatBubble(sender, text) {
             const wrapper = document.createElement('div');
             wrapper.className = `message-bubble ${sender}`;
-
+            
             const senderName = sender === 'buyer' ? 'Simulated Buyer' : 'AutoAgent (Seller)';
-
+            
             wrapper.innerHTML = `
                 <div class="message-sender">${senderName}</div>
                 <div class="message-content">${text}</div>
@@ -708,10 +827,10 @@
 
         function showTypingIndicator() {
             const wrapper = document.createElement('div');
-            wrapper.className = 'message-bubble seller typing-bubble';
+            wrapper.className = 'message-bubble seller thinking-bubble';
             wrapper.innerHTML = `
-                <div class="message-sender">AutoAgent (Seller)</div>
-                <div class="message-content typing-indicator">
+                <div class="thinking-text">Agent is thinking</div>
+                <div class="typing-indicator">
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
                     <div class="typing-dot"></div>
@@ -720,6 +839,12 @@
             messagesContainer.appendChild(wrapper);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             return wrapper;
+        }
+
+        // Clickable suggestions
+        function sendQuickPrompt(text) {
+            inputField.value = text;
+            sendMessage();
         }
 
         // Send simulated user message
@@ -734,9 +859,6 @@
             // Display buyer message in UI
             createChatBubble('buyer', text);
 
-            // Construct Item Description block
-            const itemDescription = `Product Info Summary:\nTitle: ${titleInput.value}\nPrice: ${priceInput.value}\nStock: ${stockInput.value}\nDescription: ${descInput.value}`;
-
             // Add buyer message to historical context list
             chatHistory.push({ role: 'user', content: text });
 
@@ -749,13 +871,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         user_msg: text,
-                        item_desc: `当前商品的信息如下：{"title": "${titleInput.value}", "desc": "${descInput.value}", "price_range": "${priceInput.value}", "total_stock": ${stockInput.value}, "sku_details": []}`,
+                        item_desc: `Product Information:\nTitle: ${titleInput.value}\nOriginal Price: ${priceInput.value}\nStock Qty: ${stockInput.value}\nDescription: ${descInput.value}`,
                         context: chatHistory
                     })
                 });
 
                 const data = await response.json();
-
+                
                 // Remove typing bubble
                 typingBubble.remove();
 
@@ -764,36 +886,43 @@
                 } else {
                     const botReply = data.reply;
                     const intent = data.intent;
-
+                    
                     // Display response in UI
                     createChatBubble('seller', botReply);
-
+                    
                     // Update chat history
                     chatHistory.push({ role: 'assistant', content: botReply });
-
+                    
                     // Handle bargain count increment
                     if (intent === 'price') {
                         bargainCount++;
                         bargainBadge.innerText = `Bargains: ${bargainCount}`;
                         // Append system tracking message for the next API call contexts
-                        chatHistory.push({ role: 'system', content: `议价次数: ${bargainCount}` });
-                        createSystemMessage(`System Note: Bargaining round increased to ${bargainCount}`);
+                        chatHistory.push({ role: 'system', content: `Bargaining Rounds: ${bargainCount}` });
+                        createSystemMessage(`Bargaining round count updated to: ${bargainCount}`);
                     }
 
                     // Update UI statuses
                     agentBadge.innerText = `Active Agent: ${intent}`;
+                    
+                    // Dynamic color coding for agents
                     agentBadge.className = 'badge badge-agent';
-                    if (intent === 'price') agentBadge.style.borderColor = 'var(--color-price)';
-                    else if (intent === 'tech') agentBadge.style.borderColor = 'var(--color-tech)';
-                    else if (intent === 'default') agentBadge.style.borderColor = 'var(--color-default)';
-                    else if (intent === 'classify') agentBadge.style.borderColor = 'var(--color-classify)';
-
+                    if (intent === 'price') {
+                        agentBadge.classList.add('active-price');
+                    } else if (intent === 'tech') {
+                        agentBadge.classList.add('active-tech');
+                    } else if (intent === 'default') {
+                        agentBadge.classList.add('active-default');
+                    } else if (intent === 'classify') {
+                        agentBadge.classList.add('active-classify');
+                    }
+                    
                     modelBadge.innerText = `Model: ${data.model}`;
                 }
 
             } catch (err) {
                 typingBubble.remove();
-                createSystemMessage(`HTTP Error: ${err.message}`);
+                createSystemMessage(`HTTP Connection Error: ${err.message}`);
             } finally {
                 inputField.disabled = false;
                 sendBtn.disabled = false;
@@ -813,10 +942,9 @@
             messagesContainer.innerHTML = '';
             bargainBadge.innerText = 'Bargains: 0';
             agentBadge.innerText = 'Active Agent: None';
-            agentBadge.style.borderColor = 'transparent';
-            createSystemMessage('Simulation reset successfully. Send a message to start.');
+            agentBadge.className = 'badge badge-agent';
+            createSystemMessage('Simulation reset successfully. Write a custom message or load templates.');
         });
     </script>
 </body>
-
 </html>

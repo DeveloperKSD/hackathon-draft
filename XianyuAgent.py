@@ -62,9 +62,9 @@ class XianyuReplyBot:
             raise
 
     def _safe_filter(self, text: str) -> str:
-        """安全过滤模块"""
-        blocked_phrases = ["微信", "QQ", "支付宝", "银行卡", "线下"]
-        return "[安全提醒]请通过平台沟通" if any(p in text for p in blocked_phrases) else text
+        """Safety filtering module"""
+        blocked_phrases = ["微信", "qq", "支付宝", "银行卡", "线下", "wechat", "alipay", "bank card", "offline", "whatsapp", "phone number"]
+        return "[Safety Warning] Please communicate on-platform to keep your trade secure." if any(p in text.lower() for p in blocked_phrases) else text
 
     def format_history(self, context: List[Dict]) -> str:
         """格式化对话历史，返回完整的对话记录"""
@@ -117,20 +117,20 @@ class XianyuReplyBot:
     
     def _extract_bargain_count(self, context: List[Dict]) -> int:
         """
-        从上下文中提取议价次数信息
+        Extract bargaining round count from context history
         
         Args:
-            context: 对话历史
+            context: Chat history
             
         Returns:
-            int: 议价次数，如果没有找到则返回0
+            int: Number of bargaining rounds, 0 if not found
         """
-        # 查找系统消息中的议价次数信息
+        # Look for bargaining round count in system messages
         for msg in context:
-            if msg['role'] == 'system' and '议价次数' in msg['content']:
+            if msg['role'] == 'system' and any(term in msg['content'] for term in ['Bargaining Rounds', '议价次数']):
                 try:
-                    # 提取议价次数
-                    match = re.search(r'议价次数[:：]\s*(\d+)', msg['content'])
+                    # Extract bargaining count
+                    match = re.search(r'(?:Bargaining Rounds|议价次数)[:：]\s*(\d+)', msg['content'])
                     if match:
                         return int(match.group(1))
                 except Exception:
@@ -146,26 +146,34 @@ class XianyuReplyBot:
 
 
 class IntentRouter:
-    """意图路由决策器"""
+    """Intent Router Decision Maker"""
 
     def __init__(self, classify_agent):
         self.rules = {
-            'tech': {  # 技术类优先判定
-                'keywords': ['参数', '规格', '型号', '连接', '对比'],
+            'tech': {  # Tech queries priority check
+                'keywords': ['参数', '规格', '型号', '连接', '对比', 'spec', 'specs', 'parameter', 'parameters', 'model', 'connect', 'compare', 'difference', 'size', 'dimension'],
                 'patterns': [
-                    r'和.+比'             
+                    r'和.+比',
+                    r'compare\s+with',
+                    r'diff\s+between'
                 ]
             },
             'price': {
-                'keywords': ['便宜', '价', '砍价', '少点'],
-                'patterns': [r'\d+元', r'能少\d+']
+                'keywords': ['便宜', '价', '砍价', '少点', 'cheap', 'cheaper', 'price', 'discount', 'discounted', 'bargain', 'negotiate', 'less', 'budget', 'lowest'],
+                'patterns': [
+                    r'\d+元',
+                    r'能少\d+',
+                    r'\d+\s*(?:usd|gbp|eur|rs|rupees|\$)',
+                    r'can\s+you\s+do\s+\d+'
+                ]
             }
         }
         self.classify_agent = classify_agent
 
     def detect(self, user_msg: str, item_desc, context) -> str:
-        """三级路由策略（技术优先）"""
-        text_clean = re.sub(r'[^\w\u4e00-\u9fa5]', '', user_msg)
+        """Three-stage routing strategy (Tech priority)"""
+        # Keep both alphanumeric, Chinese characters, and spaces/dashes
+        text_clean = re.sub(r'[^\w\s\u4e00-\u9fa5-]', '', user_msg).lower()
         
         # 1. 技术类关键词优先检查
         if any(kw in text_clean for kw in self.rules['tech']['keywords']):
@@ -213,9 +221,9 @@ class BaseAgent:
         return self.safety_filter(response)
 
     def _build_messages(self, user_msg: str, item_desc: str, context: str) -> List[Dict]:
-        """构建消息链"""
+        """Construct message chain"""
         return [
-            {"role": "system", "content": f"【商品信息】{item_desc}\n【你与客户对话历史】{context}\n{self.system_prompt}"},
+            {"role": "system", "content": f"[Product Specifications]\n{item_desc}\n\n[Chat History]\n{context}\n\n{self.system_prompt}"},
             {"role": "user", "content": user_msg}
         ]
 
@@ -238,7 +246,7 @@ class PriceAgent(BaseAgent):
         """重写生成逻辑"""
         dynamic_temp = self._calc_temperature(bargain_count)
         messages = self._build_messages(user_msg, item_desc, context)
-        messages[0]['content'] += f"\n▲当前议价轮次：{bargain_count}"
+        messages[0]['content'] += f"\n▲Current Bargaining Round: {bargain_count}"
 
         response = self.client.chat.completions.create(
             model=os.getenv("MODEL_NAME", "qwen-max"),
