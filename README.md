@@ -1,158 +1,83 @@
-# 🚀 Xianyu AutoAgent - 智能闲鱼客服机器人系统
+# 🚀 Xianyu AutoAgent - Intelligent E-commerce Chatbot System
 
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/) [![LLM Powered](https://img.shields.io/badge/LLM-powered-FF6F61)](https://platform.openai.com/)
+An AI-driven auto-reply and negotiation solution designed for e-commerce platforms. It utilizes a **Hierarchical Router & Expert Agents** architecture to classify buyer intentions, answer technical questions, and negotiate prices dynamically. 
 
-专为闲鱼平台打造的AI值守解决方案，实现闲鱼平台7×24小时自动化值守，支持多专家协同决策、智能议价和上下文感知对话。 
+This repository has been fully optimized to support running locally with a standalone Web Simulator using only a **Google Gemini API Key** (or any OpenAI-compatible API), requiring no Chinese accounts, phone numbers, or cookies.
 
+---
 
-## 🌟 核心特性
+## 🌟 Core Features
 
-### 智能对话引擎
-| 功能模块   | 技术实现            | 关键特性                                                     |
-| ---------- | ------------------- | ------------------------------------------------------------ |
-| 上下文感知 | 会话历史存储        | 轻量级对话记忆管理，完整对话历史作为LLM上下文输入            |
-| 专家路由   | LLM prompt+规则路由 | 基于提示工程的意图识别 → 专家Agent动态分发，支持议价/技术/客服多场景切换 |
+### 1. Multi-Agent Expert System
+Instead of using a single generic chatbot prompt, this system splits tasks among specialized expert agents:
+*   **Intent Router**: Evaluates incoming queries using rules/regex, falling back to a lightweight LLM classifier to assign the conversation to the most relevant expert.
+*   **Bargaining Agent (`PriceAgent`)**: Employs a **dynamic negotiation temperature** strategy. As bargaining rounds increase, the model's temperature increases, allowing for more creative and flexible counter-offers.
+*   **Technical Advisor Agent (`TechAgent`)**: Explains complex product specifications in clear, everyday terms.
+*   **Customer Service Agent (`DefaultAgent`)**: Guides users through standard checks, shipping info, and final checkout.
 
-### 业务功能矩阵
-| 模块     | 已实现                        | 规划中                       |
-| -------- | ----------------------------- | ---------------------------- |
-| 核心引擎 | ✅ LLM自动回复<br>✅ 上下文管理 | 🔄 情感分析增强               |
-| 议价系统 | ✅ 阶梯降价策略                | 🔄 市场比价功能               |
-| 技术支持 | ✅ 网络搜索整合                | 🔄 RAG知识库增强              |
-| 运维监控 | ✅ 基础日志                    | 🔄 钉钉集成<br>🔄  Web管理界面 |
+### 2. Standalone Web Simulator Dashboard
+*   **No Platform Setup Needed**: Play and test with the chatbot logic entirely locally.
+*   **Product Context Editor**: Instantly define simulated items (Title, Price, Stock, Description) or load presets (Mechanical Keyboard, iPhone 13, Studio Mic).
+*   **Interactive Conversation Log**: View real-time buyer messages, agent replies, activated sub-agent statuses, and bargaining round indicators.
+*   **Platform Safety Filter**: Overrides and blocks attempts to direct users to offline channels (e.g., QQ, WeChat, direct cards) to prevent fraud.
 
-## 🎨效果图
-<div align="center">
-  <img src="./images/demo1.png" width="600" alt="客服">
-  <br>
-  <em>图1: 客服随叫随到</em>
-</div>
+---
 
+## 🚴 Quick Start
 
-<div align="center">
-  <img src="./images/demo2.png" width="600" alt="议价专家">
-  <br>
-  <em>图2: 阶梯式议价</em>
-</div>
+### Requirements
+*   Python 3.8+
+*   Google Gemini API Key (obtained from [Google AI Studio](https://aistudio.google.com/))
 
-<div align="center">
-  <img src="./images/demo3.png" width="600" alt="技术专家"> 
-  <br>
-  <em>图3: 技术专家上场</em>
-</div>
+### Installation
+1. Install the dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-<div align="center">
-  <img src="./images/log.png" width="600" alt="后台log"> 
-  <br>
-  <em>图4: 后台log</em>
-</div>
+2. Configure your environment variables inside the `.env` file:
+   ```env
+   API_KEY=YOUR_GEMINI_API_KEY
+   MODEL_BASE_URL=https://generativelanguage.googleapis.com/v1beta/
+   MODEL_NAME=gemini-1.5-flash
+   ```
 
+3. Launch the Simulator Server:
+   ```bash
+   python server.py
+   ```
 
-## 🚴 快速开始
-小白请直接查看[保姆级教学文档](https://my.feishu.cn/wiki/JtkBwkI9GiokZikVdyNceEfZncE)
-### 环境要求
-- Python 3.8+
+4. Open your browser and navigate to:
+   ```text
+   http://localhost:8000
+   ```
 
-### 安装步骤
-```bash
-1. 克隆仓库
-git clone https://github.com/shaxiu/XianyuAutoAgent.git
-cd XianyuAutoAgent
+---
 
-2. 安装依赖
-pip install -r requirements.txt
+## 🛠 Project Structure
 
-3. 配置环境变量
-创建一个 `.env` 文件，包含以下内容，也可直接重命名 `.env.example` ：
-#必配配置
-API_KEY=apikey通过模型平台获取
-COOKIES_STR=填写网页端获取的cookie
-MODEL_BASE_URL=模型地址
-MODEL_NAME=模型名称
-#可选配置
-TOGGLE_KEYWORDS=接管模式切换关键词，默认为句号（输入句号切换为人工接管，再次输入则切换AI接管）
-SIMULATE_HUMAN_TYPING=True/False #模拟人工回复延迟
+*   `server.py`: Lightweight Python HTTP backend serving the simulator API.
+*   `index.html`: Modern, responsive dark-themed dashboard frontend.
+*   `XianyuAgent.py`: Core logic containing agent classes (`BaseAgent`, `PriceAgent`, `TechAgent`, `ClassifyAgent`) and the `IntentRouter`.
+*   `context_manager.py`: SQLite-based message context database layer.
+*   `main.py`: Original live WebSocket client for Goofish/Xianyu platforms.
+*   `prompts/`: Editable text files containing the system prompts for each agent.
 
-注意：默认使用的模型是通义千问，如需使用其他API，请自行修改.env文件中的模型地址和模型名称；
-COOKIES_STR自行在闲鱼网页端获取cookies(网页端F12打开控制台，选择Network，点击Fetch/XHR,点击一个请求，查看cookies)
+---
 
-4. 创建提示词文件prompts/*_prompt.txt（也可以直接将模板名称中的_example去掉），否则默认读取四个提示词模板中的内容
-```
+## 🚀 Future Scope
 
-### 使用方法
+Since the core AI reasoning and negotiation components are generic, the system can be expanded to support non-Chinese platforms and global secondhand markets:
 
-运行主程序：
-```bash
-python main.py
-```
+### 1. Global Platform Adaptability
+*   **Multi-Platform Connectors**: Adapt the WebSocket/webhook logic to integrate with global platforms like **Facebook Marketplace**, **eBay**, **OLX (India)**, or **Shopify**.
+*   **Multi-language Prompt Bundles**: Expand the files in the `prompts/` directory to natively support English, Hindi, Spanish, etc., translating Chinese platform slangs (e.g., "可小刀", "包邮") to their regional equivalents (e.g., "Negotiable", "Free shipping").
 
-### 自定义提示词
+### 2. Advanced AI Capabilities
+*   **RAG Knowledge Base**: Connect the `TechAgent` to custom database tables or text manuals (e.g., electronics spec sheets, user manuals) so it can pull precise answer contexts automatically.
+*   **Rule-based Price Caps**: Introduce physical minimum price thresholds (e.g., a setting where the AI is strictly forbidden from offering less than 85% of the original product price).
+*   **Voice Messages support**: Use Speech-to-Text and Text-to-Speech models to allow buyers to send voice notes and receive vocal audio responses.
 
-可以通过编辑 `prompts` 目录下的文件来自定义各个专家的提示词：
-
-- `classify_prompt.txt`: 意图分类提示词
-- `price_prompt.txt`: 价格专家提示词
-- `tech_prompt.txt`: 技术专家提示词
-- `default_prompt.txt`: 默认回复提示词
-
-## 🤝 参与贡献
-
-欢迎通过 Issue 提交建议或 PR 贡献代码，请遵循 [贡献指南](https://contributing.md/)
-
-## 🧸特别鸣谢
-本项目参考了以下开源项目：
-https://github.com/cv-cat/XianYuApis
-
-感谢<a href="https://github.com/cv-cat">@CVcat</a>的技术支持
-
-## 🛡 注意事项
-
-⚠️ 注意：**本项目仅供学习与交流，如有侵权联系作者删除。**
-
-鉴于项目的特殊性，开发团队可能在任何时间**停止更新**或**删除项目**。
-
-如需学习交流，请联系：[coderxiu@qq.com](https://mailto:coderxiu@qq.com/)
-
-## 📱 交流群
-欢迎加入项目交流群，交流技术、分享经验、互助学习。
-<div align="center">
-  <table>
-    <tr>
-      <td align="center"><strong>交流群25（已满200）</strong></td>
-      <td align="center"><strong>交流群26（推荐加入）</strong></td>
-    </tr>
-    <tr>
-      <td><img src="./images/wx_group25-1.png" width="300px" alt="交流群25"></td>
-      <td><img src="./images/wx_group26.png" width="300px" alt="交流群26"></td>
-    </tr>
-  </table>
-</div>
-
-## 💼 寻找机会
-
-### <a href="https://github.com/shaxiu">@Shaxiu</a>
-**🔍寻求方向**：**AI产品经理**  
-**📫 联系：** **email**:coderxiu@qq.com；**wx:** coderxiu
-
-### <a href="https://github.com/cv-cat">@CVcat</a>
-**🔍寻求方向**：**研发工程师**（python、java、逆向、爬虫）  
-**📫 联系：** **email:** 992822653@qq.com；**wx:** CVZC15751076989
-## ☕ 请喝咖啡
-您的☕和⭐将助力项目持续更新：
-
-<div align="center">
-  <img src="./images/wechat_pay.jpg" width="400px" alt="微信赞赏码"> 
-  <img src="./images/alipay.jpg" width="400px" alt="支付宝收款码">
-</div>
-
-
-## 📈 Star 趋势
-<a href="https://www.star-history.com/#shaxiu/XianyuAutoAgent&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=shaxiu/XianyuAutoAgent&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=shaxiu/XianyuAutoAgent&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=shaxiu/XianyuAutoAgent&type=Date" />
- </picture>
-</a>
-
-
+### 3. Simulator & UI Enhancements
+*   **Prompt Editor Dashboard**: Allow editing and saving custom prompts directly from the web browser instead of opening text files in an editor.
+*   **Database Viewer**: A dashboard tab showing saved items, overall successful negotiations, average concession rates, and historical logs.
