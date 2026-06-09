@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xianyu AutoAgent Simulator (Gemini Powered)</title>
+    <!-- Modern Premium Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary-glow: rgba(99, 102, 241, 0.15);
+
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+
+            --color-primary: #6366f1;
+            --color-primary-hover: #4f46e5;
+            --color-price: #ef4444;
+            --color-tech: #10b981;
+            --color-default: #3b82f6;
+            --color-classify: #a855f7;
+
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.08) 0px, transparent 50%);
+        }
+
+        header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo-section h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%);
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-section span {
+            font-size: 0.75rem;
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .status-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--color-tech);
+            box-shadow: 0 0 8px var(--color-tech);
+        }
+
+        .main-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            max-width: 1600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem;
+            gap: 1.5rem;
+            height: calc(100vh - 85px);
+        }
+
+        /* Left Side Panel - Config & Presets */
+        .config-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            backdrop-filter: blur(16px);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.65rem 0.8rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .presets-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .preset-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preset-btn:hover {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--text-primary);
+        }
+
+        .preset-btn::after {
+            content: '→';
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: var(--transition-smooth);
+        }
+
+        .preset-btn:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Right Side - Chat Interface */
+        .chat-container {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(17, 24, 39, 0.4);
+        }
+
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #a855f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            color: white;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .user-details h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .user-details p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .chat-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: var(--transition-smooth);
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--color-default);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .badge-agent {
+            background: rgba(168, 85, 247, 0.1);
+            color: #c084fc;
+            border-color: rgba(168, 85, 247, 0.2);
+            text-transform: uppercase;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: rgba(10, 14, 23, 0.3);
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-bubble.buyer {
+            align-self: flex-start;
+        }
+
+        .message-bubble.seller {
+            align-self: flex-end;
+        }
+
+        .message-sender {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin: 0 0.5rem;
+        }
+
+        .message-bubble.seller .message-sender {
+            align-self: flex-end;
+        }
+
+        .message-content {
+            padding: 0.85rem 1.1rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .buyer .message-content {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-top-left-radius: 4px;
+            color: var(--text-primary);
+        }
+
+        .seller .message-content {
+            background: var(--color-primary);
+            border-top-right-radius: 4px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);
+        }
+
+        .message-bubble.system {
+            align-self: center;
+            max-width: 90%;
+            margin: 0.5rem 0;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .system .message-content {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes wave {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* Input area */
+        .chat-input-area {
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            background: rgba(17, 24, 39, 0.6);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 0.85rem 1.5rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .send-btn {
+            background: var(--color-primary);
+            border: none;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+        }
+
+        .send-btn:hover {
+            background: var(--color-primary-hover);
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition-smooth);
+            font-family: inherit;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-section">
+            <h1>Xianyu AutoAgent <span>Simulator</span></h1>
+        </div>
+        <div class="api-status">
+            <div class="status-pill">
+                <div class="status-indicator"></div>
+                <span>Google Gemini (OpenAI API Mode)</span>
+            </div>
+            <button class="btn-secondary" id="clear-chat-btn">Reset Simulation</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Configuration & Presets (Left Side) -->
+        <div class="config-panel">
+            <div class="panel-title">
+                <span>Product Configuration</span>
+            </div>
+
+            <div class="form-group">
+                <label for="prod-presets">Product Templates</label>
+                <div class="presets-list" id="prod-presets">
+                    <button class="preset-btn" onclick="loadPreset('keyboard')">⌨️ Mechanical Keyboard</button>
+                    <button class="preset-btn" onclick="loadPreset('iphone')">📱 iPhone 13 (Used)</button>
+                    <button class="preset-btn" onclick="loadPreset('mic')">🎙️ Studio Microphone</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="item-title">Product Title</label>
+                <input type="text" id="item-title" placeholder="e.g., Keychron K2 Mechanical Keyboard">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="item-price">Original Price</label>
+                    <input type="text" id="item-price" placeholder="e.g., 499">
+                </div>
+                <div class="form-group">
+                    <label for="item-stock">Stock Qty</label>
+                    <input type="number" id="item-stock" placeholder="e.g., 1">
+                </div>
+            </div>
+
+            <div class="form-group" style="flex: 1; display: flex; flex-direction: column;">
+                <label for="item-desc">Product Description & Specs</label>
+                <textarea id="item-desc" style="flex: 1; min-height: 150px; resize: none;"
+                    placeholder="Provide details about conditions, scratch levels, specifications..."></textarea>
+            </div>
+        </div>
+
+        <!-- Chat Panel (Right Side) -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div class="chat-user-info">
+                    <div class="avatar">B</div>
+                    <div class="user-details">
+                        <h3>Simulated Buyer</h3>
+                        <p id="model-badge">Model: gemini-1.5-flash</p>
+                    </div>
+                </div>
+                <div class="chat-meta">
+                    <div class="badge badge-info" id="bargain-badge">Bargains: 0</div>
+                    <div class="badge badge-agent" id="agent-badge">Active Agent: None</div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages-container">
+                <!-- Welcome system message -->
+                <div class="message-bubble system">
+                    <div class="message-content">
+                        Hello! Set your product details on the left, then send a message as a simulated buyer. The AI
+                        AutoAgent will respond as the seller.
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" id="message-input"
+                        placeholder="Type a message as the buyer (e.g., 'Is it available?', 'Can you make it cheaper?')...">
+                </div>
+                <button class="send-btn" id="send-button">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Preset configurations
+        const presets = {
+            keyboard: {
+                title: "Keychron K2 V2 Hot-swappable Mechanical Keyboard",
+                price: "¥399",
+                stock: 1,
+                desc: "Original Price: 499. Hot-swappable red switches, RGB backlight, aluminium frame. Condition is 95% new, lightly used for 2 weeks. USB-C cable and original keycap puller included. Selling because I upgraded to a custom board."
+            },
+            iphone: {
+                title: "iPhone 13 128GB Blue (90% New)",
+                price: "¥2800",
+                stock: 1,
+                desc: "Used iPhone 13. Screen has normal micro-scratches, back glass is perfect. Battery health is at 83%. All functions work normal (FaceID, Cameras, TrueTone). Comes with an extra screen protector but no charger box."
+            },
+            mic: {
+                title: "Shure MV7 USB/XLR Podcast Microphone",
+                price: "¥1200",
+                stock: 2,
+                desc: "Professional dynamic microphone. Excellent condition, used only in clean home studio environment. Both USB and XLR ports work flawlessly. Zero scratches on the metal chassis. Fast shipping."
+            }
+        };
+
+        // State variables
+        let chatHistory = [];
+        let bargainCount = 0;
+
+        // Elements
+        const inputField = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-button');
+        const messagesContainer = document.getElementById('chat-messages-container');
+        const clearBtn = document.getElementById('clear-chat-btn');
+        const bargainBadge = document.getElementById('bargain-badge');
+        const agentBadge = document.getElementById('agent-badge');
+        const modelBadge = document.getElementById('model-badge');
+
+        const titleInput = document.getElementById('item-title');
+        const priceInput = document.getElementById('item-price');
+        const stockInput = document.getElementById('item-stock');
+        const descInput = document.getElementById('item-desc');
+
+        // Initial Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPreset('keyboard');
+            inputField.focus();
+        });
+
+        function loadPreset(key) {
+            const data = presets[key];
+            titleInput.value = data.title;
+            priceInput.value = data.price;
+            stockInput.value = data.stock;
+            descInput.value = data.desc;
+        }
+
+        function createSystemMessage(text) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-bubble system';
+            wrapper.innerHTML = `<div class="message-content">${text}</div>`;
+            messagesContainer.appendChild(wrapper);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function createChatBubble(sender, text) {
+            const wrapper = document.createElement('div');
+            wrapper.className = `message-bubble ${sender}`;
+
+            const senderName = sender === 'buyer' ? 'Simulated Buyer' : 'AutoAgent (Seller)';
+
+            wrapper.innerHTML = `
+                <div class="message-sender">${senderName}</div>
+                <div class="message-content">${text}</div>
+            `;
+            messagesContainer.appendChild(wrapper);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-bubble seller typing-bubble';
+            wrapper.innerHTML = `
+                <div class="message-sender">AutoAgent (Seller)</div>
+                <div class="message-content typing-indicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            messagesContainer.appendChild(wrapper);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return wrapper;
+        }
+
+        // Send simulated user message
+        async function sendMessage() {
+            const text = inputField.value.trim();
+            if (!text) return;
+
+            inputField.value = '';
+            inputField.disabled = true;
+            sendBtn.disabled = true;
+
+            // Display buyer message in UI
+            createChatBubble('buyer', text);
+
+            // Construct Item Description block
+            const itemDescription = `Product Info Summary:\nTitle: ${titleInput.value}\nPrice: ${priceInput.value}\nStock: ${stockInput.value}\nDescription: ${descInput.value}`;
+
+            // Add buyer message to historical context list
+            chatHistory.push({ role: 'user', content: text });
+
+            // Display typing animation
+            const typingBubble = showTypingIndicator();
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_msg: text,
+                        item_desc: `当前商品的信息如下：{"title": "${titleInput.value}", "desc": "${descInput.value}", "price_range": "${priceInput.value}", "total_stock": ${stockInput.value}, "sku_details": []}`,
+                        context: chatHistory
+                    })
+                });
+
+                const data = await response.json();
+
+                // Remove typing bubble
+                typingBubble.remove();
+
+                if (data.error) {
+                    createSystemMessage(`Error: ${data.error}`);
+                } else {
+                    const botReply = data.reply;
+                    const intent = data.intent;
+
+                    // Display response in UI
+                    createChatBubble('seller', botReply);
+
+                    // Update chat history
+                    chatHistory.push({ role: 'assistant', content: botReply });
+
+                    // Handle bargain count increment
+                    if (intent === 'price') {
+                        bargainCount++;
+                        bargainBadge.innerText = `Bargains: ${bargainCount}`;
+                        // Append system tracking message for the next API call contexts
+                        chatHistory.push({ role: 'system', content: `议价次数: ${bargainCount}` });
+                        createSystemMessage(`System Note: Bargaining round increased to ${bargainCount}`);
+                    }
+
+                    // Update UI statuses
+                    agentBadge.innerText = `Active Agent: ${intent}`;
+                    agentBadge.className = 'badge badge-agent';
+                    if (intent === 'price') agentBadge.style.borderColor = 'var(--color-price)';
+                    else if (intent === 'tech') agentBadge.style.borderColor = 'var(--color-tech)';
+                    else if (intent === 'default') agentBadge.style.borderColor = 'var(--color-default)';
+                    else if (intent === 'classify') agentBadge.style.borderColor = 'var(--color-classify)';
+
+                    modelBadge.innerText = `Model: ${data.model}`;
+                }
+
+            } catch (err) {
+                typingBubble.remove();
+                createSystemMessage(`HTTP Error: ${err.message}`);
+            } finally {
+                inputField.disabled = false;
+                sendBtn.disabled = false;
+                inputField.focus();
+            }
+        }
+
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            chatHistory = [];
+            bargainCount = 0;
+            messagesContainer.innerHTML = '';
+            bargainBadge.innerText = 'Bargains: 0';
+            agentBadge.innerText = 'Active Agent: None';
+            agentBadge.style.borderColor = 'transparent';
+            createSystemMessage('Simulation reset successfully. Send a message to start.');
+        });
+    </script>
+</body>
+
+</html>

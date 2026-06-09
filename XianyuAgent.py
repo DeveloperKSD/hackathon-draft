@@ -261,16 +261,19 @@ class TechAgent(BaseAgent):
         messages = self._build_messages(user_msg, item_desc, context)
         # messages[0]['content'] += "\n▲知识库：\n" + self._fetch_tech_specs()
 
-        response = self.client.chat.completions.create(
-            model=os.getenv("MODEL_NAME", "qwen-max"),
-            messages=messages,
-            temperature=0.4,
-            max_tokens=500,
-            top_p=0.8,
-            extra_body={
-                "enable_search": True,
-            }
-        )
+        params = {
+            "model": os.getenv("MODEL_NAME", "qwen-max"),
+            "messages": messages,
+            "temperature": 0.4,
+            "max_tokens": 500,
+            "top_p": 0.8,
+        }
+        # Only add enable_search if base_url is Dashscope
+        base_url = os.getenv("MODEL_BASE_URL", "")
+        if "dashscope" in base_url:
+            params["extra_body"] = {"enable_search": True}
+
+        response = self.client.chat.completions.create(**params)
 
         return self.safety_filter(response.choices[0].message.content)
 
